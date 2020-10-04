@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class RvAdapter : RecyclerView.Adapter<RvAdapter.TvViewHolder>(){
 
-        lateinit var videoNames: List<VideoName>
+        lateinit var videoItems: List<VideoItem>
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TvViewHolder {
 
@@ -18,25 +18,27 @@ class RvAdapter : RecyclerView.Adapter<RvAdapter.TvViewHolder>(){
 
         override fun onBindViewHolder(holder: TvViewHolder, position: Int) {
 
-            val videoName: VideoName = videoNames[position]
-            holder.bind(videoName)
+            val videoItem: VideoItem = videoItems[position]
+            holder.bind(videoItem)
         }
 
-        fun setItems(videoName: List<VideoName>){
-            videoNames = videoName
+        fun setItems(videoItem: List<VideoItem>){
+            videoItems = videoItem
             notifyDataSetChanged()
         }
 
-        override fun getItemCount(): Int = videoNames.size
+        override fun getItemCount(): Int = videoItems.size
 
         class TvViewHolder(inflater: LayoutInflater, parent: ViewGroup):
             RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item, parent, false)){
 
             var tvVideoName: TextView = itemView.findViewById(R.id.videoName)
+            var tvVideoDuration: TextView = itemView.findViewById(R.id.videoDuration)
 
-            fun bind(videoName: VideoName){
+            fun bind(videoItem: VideoItem){
 
-                tvVideoName.text = videoName.videoName
+                tvVideoName.text = videoItem.videoName
+                tvVideoDuration.text = videoItem.videoDuration
 
             }
         }

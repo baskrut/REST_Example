@@ -8,13 +8,14 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Query
-import java.io.IOException
+
 
 interface UdemyAipService {
 
     @GET("?price=price-free, fields[course]=title")
-    fun search(/*@Header("Authorization")header: String, */@Query("q")query: String = "Learn+Flutter+%26+Dart+to+Build+iOS+%26+Android+Apps", @Query("page") page: Int): Observable<Result>
+    fun search(@Header("Authorization")header: String, @Query("q")query: String = "Learn+Flutter+%26+Dart+to+Build+iOS+%26+Android+Apps", @Query("page") page: Int): Observable<Result>
 
     companion object Factory {
 

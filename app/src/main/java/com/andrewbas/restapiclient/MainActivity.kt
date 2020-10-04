@@ -13,16 +13,20 @@ import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var etClientId: EditText
     private lateinit var etClientSecret: EditText
-    private lateinit var btnSearch: Button
+    /*private lateinit var btnSearch: Button
+    private lateinit var btnNext: Button
+    private lateinit var btnPrev: Button*/
 
     private lateinit var videoNames: List<VideoItem>
 
     private lateinit var header: String
+
     private val query: String = "Learn+Flutter+%26+Dart+to+Build+iOS+%26+Android+Apps"
 
     var page = 1
@@ -31,11 +35,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        etClientId = findViewById(R.id.etClientId)
+        /*etClientId = findViewById(R.id.etClientId)
         etClientSecret = findViewById(R.id.etClientSecret)
 
-        btnSearch = findViewById(R.id.btnSearch)
+*/
         btnSearch.setOnClickListener(this)
+
+        btnNext.setOnClickListener(this)
+
+        btnPrev.setOnClickListener(this)
 
     }
 
@@ -45,10 +53,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if(v?.id == R.id.btnSearch){
             if (etClientSecret.text != null && etClientId.text != null){
 
-
-
-                /*val apiService = UdemyAipService.create()
-                apiService.search(page)*/
                 makeRequest(page)
 
             }else {
@@ -69,18 +73,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     fun getEncodedBase64(clientId: String, clientSecret: String): String{
 
-        val stringForByteArr = "$clientId:$clientSecret"
+        val byteArr = "$clientId:$clientSecret".toByteArray()
 
-       return Base64.encodeToString(@OptIn(stringForByteArr.encodeToByteArray()), Base64.DEFAULT )
+       return Base64.encodeToString(byteArr, Base64.DEFAULT)
     }
 
     private fun makeRequest(page: Int){
         val repository = SearchRepositoryProvider.provideSearchRepository()
-        repository.searchVideos(query, page)
+        repository.searchVideos(header, query, page)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe ({
-                    result -> createRecyclerView(result.items)
+                    result -> if(result.total_count > 0){
+                sortVideoNamesList(result.items)
+            }else {
+                showDialog(R.string.dialog_massage.toString())
+            }
 
             }, { error ->
                 error.printStackTrace()
@@ -88,10 +96,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-   /* private fun createVideoNamesList(){
-
+    private fun sortVideoNamesList(items: List<VideoItem>){
+        val sorted: List<VideoItem> = items.sortedBy {it.videoDuration}
+        createRecyclerView(sorted)
     }
-*/
     private fun showDialog(message: String){
 
         val builder = AlertDialog.Builder(this)
@@ -125,8 +133,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     class SearchRepository(val apiService: UdemyAipService) {
-        fun searchVideos(/*header: String, */query: String, page: Int): Observable<Result> {
-            return apiService.search(/*header, */query, page)
+        fun searchVideos(header: String, query: String, page: Int): Observable<Result> {
+            return apiService.search(header, query, page)
         }
     }
 
