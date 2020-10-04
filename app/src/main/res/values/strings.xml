@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">REST Api client</string>
+    <string name="btnSearch">Get free video</string>
+    <string name="clientSecret">Client Secret</string>
+    <string name="clientId">Client Id</string>
+    <string name="dialog_positive_btn">OK</string>
+    <string name="dialog_massage">Please add Client Id and Client Secret in form above \n or ensure you're insert proper data </string>
+    <string name="btn_next">Next Page</string>
+    <string name="btn_prev">Previous Page</string>
+</resources>
